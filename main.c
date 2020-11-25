@@ -73,14 +73,14 @@ int main()
 
 
 /********  FUNCIONES ********/
-bool filtro(Tarea* datos)
+bool filtro(Tarea* datos) //Funcion que se encarga de que no se ingresen tareas repetidas
 {
     bool flag = false;
     Tarea* aux;
     return flag;
 }
 
-void Importar(TreeMap* data_base, char* nombre)
+void Importar(TreeMap* data_base, char* nombre) //Funcion que importa un archivo con tareas
 {
     FILE* input;
     char nombre_archivo[20];
@@ -101,4 +101,14 @@ void Importar(TreeMap* data_base, char* nombre)
         if(strcmp(get_csv_field(line, 1), "ConProgreso")) datos->flag = true;
         if(filtro(datos) == false) insertTreeMap(data_base, datos->fecha_finalizacion, datos);
     }
+}
+
+void actualizar(TreeMap* data_base, HashMap* finalizadas, int fecha) //Funcion que actualiza los datos almacenados en base a la fecha ingresada (Elimina las tareas expirasdas)
+{
+
+}
+
+void Mostrar_proximas(TreeMap* data_base, int fecha) //Funcion que muestra al usuario las tareas que tendra dentro de un plazo de 1 semana
+{
+
 }
