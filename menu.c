@@ -20,12 +20,30 @@ int menu(TreeMap* data_base, HashMap* finalizadas)
         switch (opcion)
         {
         case 'a':
+        {
             char nombre[40];
-            printf("Ingresa el nombre del archivo que deseas importar (sin formato) \n");
+            printf("Ingrese el nombre del archivo que deseas importar (sin formato) \n");
             fflush(stdin);
             scanf("%s", nombre);
             Importar(data_base, nombre);
             break;
+        }
+        case 'b'
+        {
+            char nombre[40];
+            printf("Ingrese el nombre del archivo en el cual se exportaran tus tareas\n");
+            fflush(stdin);
+            scanf("%s", nombre);
+            char opc;
+            printf("¿Que desea exportar?\n a) Solo sus tareas finalizadas\n b) Solo sus tareas que aun no han sido finalizadas\n c) Todas tus tarea\n");
+            scanf("%c", &opc);
+            if(opc == 'a') Exportar(finalizdas, nombre);
+            else if(opc == 'b') Exportar(data_base, nombre);
+            else if(opc == 'c') Exportar(data_base, finalizadas, nombre);
+            else printf("Opcion no valida, intentelo denuevo\n");
+            break;
+            
+        }
         case '\n':
         {
             flag = 0;
