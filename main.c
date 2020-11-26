@@ -9,12 +9,13 @@
 #include "lectura_csv.c"
 #include "menu.c"
 
+int ID = 1;
+
 typedef struct
 {
     char* nombre;
     int progreso;
     bool flag; //Indica si la tarea posee progreso o no
-    int fecha_finalizacion;
     int dia;
     int mes;
     int anio;
@@ -36,6 +37,8 @@ int transformar_fecha(int dia, int mes, int anio) //Funcion que transforma una f
     fecha = anio % 100;
     fecha = fecha * 12 + mes - 1;
     fecha = fecha * 31 + dia - 1;
+    fecha = fecha * 1000 + ID;
+    ID++;
     return fecha;
 }
 
@@ -53,16 +56,20 @@ int main()
     FILE* tareas = fopen("tareas.csv", "r");
     char line[100];
     char* nombre;
+    char* progre;
+    int fecha_finalizacion;
     while(fgets(line, 99, tareas) != NULL)
     {
         nombre = (char *) get_csv_field(line, 0);
         Tarea* datos = create_tarea(nombre);
-        datos->dia = get_csv_field(line, 2);
-        datos->mes = get_csv_field(line, 3);
-        datos->anio = get_csv_field(line, 4);
-        datos->fecha_finalizacion = transformar_fecha(datos->dia, datos->mes, datos->anio);
-        if(strcmp(get_csv_field(line, 1), "ConProgreso")) datos->flag = true;
-        insertTreeMap(data_base, datos->fecha_finalizacion, datos);
+        datos->dia = atoi(get_csv_field(line, 2));
+        datos->mes = atoi(get_csv_field(line, 3));
+        datos->anio = atoi(get_csv_field(line, 4));
+        fecha_finalizacion = transformar_fecha(datos->dia, datos->mes, datos->anio);
+        printf("%i\n", fecha_finalizacion);
+        progre = (char *) get_csv_field(line,1);
+        if(strcmp(progre, "ConProgreso")) datos->flag = true;
+        insertTreeMap(data_base, &fecha_finalizacion, datos);
     }
 
     fclose(tareas);
@@ -89,26 +96,31 @@ void Importar(TreeMap* data_base, char* nombre) //Funcion que importa un archivo
     if(input == NULL)   printf("No existe el archivo\n"); return;
 
     char line[100];
-    char* nombre;
+    char* name;
+    char* progre;
+    int fecha_finalizacion;
     while(fgets(line, 99, input) != NULL)
     {
-        nombre = (char *) get_csv_field(line, 0);
+        name = (char *) get_csv_field(line, 0);
         Tarea* datos = create_tarea(nombre);
-        datos->dia = get_csv_field(line, 2);
-        datos->mes = get_csv_field(line, 3);
-        datos->anio = get_csv_field(line, 4);
-        datos->fecha_finalizacion = transformar_fecha(datos->dia, datos->mes, datos->anio);
-        if(strcmp(get_csv_field(line, 1), "ConProgreso")) datos->flag = true;
-        if(filtro(datos) == false) insertTreeMap(data_base, datos->fecha_finalizacion, datos);
+        datos->dia = atoi(get_csv_field(line, 2));
+        datos->mes = atoi(get_csv_field(line, 3));
+        datos->anio = atoi(get_csv_field(line, 4));
+        fecha_finalizacion = transformar_fecha(datos->dia, datos->mes, datos->anio);
+        progre = (char *) get_csv_field(line,1);
+        if(strcmp(progre, "ConProgreso")) datos->flag = true;
+        insertTreeMap(data_base, &fecha_finalizacion, datos);
     }
 }
 
-void actualizar(TreeMap* data_base, HashMap* finalizadas, int fecha) //Funcion que actualiza los datos almacenados en base a la fecha ingresada (Elimina las tareas expirasdas)
+void Mostrar_proximas(TreeMap* data_base) //Funcion que muestra al usuario las proximas 10 tareas
 {
-
-}
-
-void Mostrar_proximas(TreeMap* data_base, int fecha) //Funcion que muestra al usuario las tareas que tendra dentro de un plazo de 1 semana
-{
-
+    printf("ATENTO!\n Tus proximas tareas son:\n Nombre \t\t\t Progreso \t Fecha Finalizacion\n");
+    Tarea* aux = firstTreeMap(data_base);
+    while(aux != NULL)
+    {
+        if(aux->flag == true)  printf("%s \t Sin Progreso \t\t %i %i %i\n", aux->nombre, aux->dia, aux->mes, aux->anio);
+        else printf("%s \t %i \t\t %i %i %i\n", aux->nombre, aux->progreso, aux->dia, aux->mes, aux->anio);
+        aux = nextTreeMap(data_base);
+    }
 }
