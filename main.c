@@ -57,19 +57,20 @@ int main()
     char line[100];
     char* nombre;
     char* progre;
-    int fecha_finalizacion;
+    long* fecha_finalizacion;
     while(fgets(line, 99, tareas) != NULL)
     {
         nombre = (char *) get_csv_field(line, 0);
         Tarea* datos = create_tarea(nombre);
+        fecha_finalizacion = (long *) malloc (sizeof(long));
         datos->dia = atoi(get_csv_field(line, 2));
         datos->mes = atoi(get_csv_field(line, 3));
         datos->anio = atoi(get_csv_field(line, 4));
-        fecha_finalizacion = transformar_fecha(datos->dia, datos->mes, datos->anio);
+        *fecha_finalizacion = transformar_fecha(datos->dia, datos->mes, datos->anio);
         printf("%i\n", fecha_finalizacion);
         progre = (char *) get_csv_field(line,1);
         if(strcmp(progre, "ConProgreso")) datos->flag = true;
-        insertTreeMap(data_base, &fecha_finalizacion, datos);
+        insertTreeMap(data_base, fecha_finalizacion, datos);
     }
 
     fclose(tareas);
@@ -98,18 +99,19 @@ void Importar(TreeMap* data_base, char* nombre) //Funcion que importa un archivo
     char line[100];
     char* name;
     char* progre;
-    int fecha_finalizacion;
+    long* fecha_finalizacion;
     while(fgets(line, 99, input) != NULL)
     {
         name = (char *) get_csv_field(line, 0);
         Tarea* datos = create_tarea(nombre);
+        fecha_finalizacion = (long *) malloc (sizeof(long)); 
         datos->dia = atoi(get_csv_field(line, 2));
         datos->mes = atoi(get_csv_field(line, 3));
         datos->anio = atoi(get_csv_field(line, 4));
-        fecha_finalizacion = transformar_fecha(datos->dia, datos->mes, datos->anio);
+        *fecha_finalizacion = transformar_fecha(datos->dia, datos->mes, datos->anio);
         progre = (char *) get_csv_field(line,1);
         if(strcmp(progre, "ConProgreso")) datos->flag = true;
-        insertTreeMap(data_base, &fecha_finalizacion, datos);
+        insertTreeMap(data_base, fecha_finalizacion, datos);
     }
 }
 
