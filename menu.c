@@ -14,7 +14,7 @@ int menu(TreeMap* data_base, HashMap* finalizadas)
 
     while(flag != 0)
     {
-        printf("\n ¿Que deseas hacer?\n a) Importar un archivo con tus tareas\n b) Exportar un archivo con tus tareas\n c) Eliminar una tarea o evaluacion\n d) Ver todas tus tareas\n e) Ver tus tareas finalizadas f) Seleccionar una tarea\n Si no quieres hacer nada presiona ENTER\n");
+        printf("\n ¿Que deseas hacer?\n a) Importar un archivo con tus tareas\n b) Exportar un archivo con tus tareas\n c) Eliminar una tarea o evaluacion\n d) Ver tus tareas\n e) Seleccionar una tarea\n Si no quieres hacer nada presiona ENTER\n");
         fflush(stdin);
         scanf("%c", &opcion);
         switch (opcion)
