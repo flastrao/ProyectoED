@@ -3,6 +3,12 @@
 void Importar(TreeMap* data_base, char* nombre);
 int transformar_fecha(int dia, int mes, int anio);
 void Mostrar_proximas(TreeMap* data_base);
+void actualizar(TreeMap* data_base, HashMap* finalizadas, int fecha);
+void Eliminar (TreeMap* data_base);
+void Mostrar_todo (TreeMap* data_base, HashMap* finalizadas);
+void Mostrar_no_finalizadas(TreeMap* data_base);
+void Mostrar_finalizadas(TreeMap* data_base);
+void Seleccionar (TreeMap* data_base);
 
 int menu(TreeMap* data_base, HashMap* finalizadas)
 {
@@ -37,16 +43,16 @@ int menu(TreeMap* data_base, HashMap* finalizadas)
                 char opc;
                 printf("¿Que desea exportar?\n a) Solo sus tareas finalizadas\n b) Solo sus tareas que aun no han sido finalizadas\n c) Todas tus tarea\n");
                 scanf("%c", &opc);
-                /*
+
                 if(opc == 'a') Exportar(finalizadas, nombre);
                 else if(opc == 'b') Exportar(data_base, nombre);
                 else if(opc == 'c') Exportar(data_base, finalizadas, nombre);
-                else printf("Opcion no valida, intentelo denuevo\n");*/
+                else printf("Opcion no valida, intentelo denuevo\n");
                 break;    
             }
             case 'c':
             {
-                //Eliminar(data_base);
+                Eliminar(data_base);
                 break;
             }
             case 'd':
@@ -55,16 +61,16 @@ int menu(TreeMap* data_base, HashMap* finalizadas)
                 printf("¿Que tareas desea ver?\n a) Solo tareas finalizadas\n b) Solo tareas que aun no han sido finalizadas\n c) Todas tus tareas");
                 fflush(stdin);
                 scanf("%c", &opc);
-                /*
-                if(opc == 'a') Mostrar_finalizadas(finalizadas);
+                
+                if(opc == 'a') Mostrar_finalizadas(data_base);
                 else if(opc == 'b') Mostrar_no_finalizadas(data_base);
                 else if(opc == 'c') Mostrar_todo(data_base, finalizadas);
-                else printf("Opcion no valida, intentelo denuevo\n");*/
+                else printf("Opcion no valida, intentelo denuevo\n");
                 break;
             }
             case 'e':
             {
-                //Seleccionar(data_base);
+                Seleccionar(data_base);
                 break;
             }
             case '\n':

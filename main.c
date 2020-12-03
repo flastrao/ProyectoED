@@ -20,6 +20,7 @@ typedef struct
     int mes;
     int anio;
     bool finalizada;
+    long* fecha_finalizacion;
 } Tarea;
 
 Tarea* create_tarea(char * nombre) //Funcion que inicializa las variables de un tipo de dato tarea
@@ -28,6 +29,7 @@ Tarea* create_tarea(char * nombre) //Funcion que inicializa las variables de un 
     input->nombre = nombre;
     input->flag = false;
     input->finalizada = false;
+    input->fecha_finalizacion = (long *) malloc (sizeof(long));
     return input;
 }
 
@@ -67,7 +69,7 @@ int main()
         datos->mes = atoi(get_csv_field(line, 3));
         datos->anio = atoi(get_csv_field(line, 4));
         *fecha_finalizacion = transformar_fecha(datos->dia, datos->mes, datos->anio);
-        printf("%i\n", fecha_finalizacion);
+        datos->fecha_finalizacion = fecha_finalizacion;
         progre = (char *) get_csv_field(line,1);
         if(strcmp(progre, "ConProgreso")) datos->flag = true;
         insertTreeMap(data_base, fecha_finalizacion, datos);
@@ -104,11 +106,11 @@ void Importar(TreeMap* data_base, char* nombre) //Funcion que importa un archivo
     {
         name = (char *) get_csv_field(line, 0);
         Tarea* datos = create_tarea(nombre);
-        fecha_finalizacion = (long *) malloc (sizeof(long)); 
         datos->dia = atoi(get_csv_field(line, 2));
         datos->mes = atoi(get_csv_field(line, 3));
         datos->anio = atoi(get_csv_field(line, 4));
         *fecha_finalizacion = transformar_fecha(datos->dia, datos->mes, datos->anio);
+        datos->fecha_finalizacion = fecha_finalizacion;
         progre = (char *) get_csv_field(line,1);
         if(strcmp(progre, "ConProgreso")) datos->flag = true;
         insertTreeMap(data_base, fecha_finalizacion, datos);
@@ -125,4 +127,99 @@ void Mostrar_proximas(TreeMap* data_base) //Funcion que muestra al usuario las p
         else printf("%s \t %i \t\t %i %i %i\n", aux->nombre, aux->progreso, aux->dia, aux->mes, aux->anio);
         aux = nextTreeMap(data_base);
     }
+}
+
+void actualizar(TreeMap* data_base, HashMap* finalizadas, int fecha) //Funcion que actualiza los datos almacenados en base a la fecha ingresada (Elimina las tareas expirasdas)
+{
+    Tarea* archivo = firstTreeMap(data_base);
+    while(archivo != NULL){
+        if(archivo->fecha_finalizacion){
+            Eliminar(archivo);
+            archivo = nextTreeMap(data_base);
+        }
+        archivo = nextTreeMap(data_base);
+    }
+    return;
+}
+
+void Mostrar_todo(TreeMap* data_base, HashMap* fecha) //Funcion que muestra al usuario las tareas que tiene
+{
+    printf("Todas tus tareas son:\n");
+    Tarea* archivo = firstTreeMap(data_base);
+    if(archivo == NULL){
+        printf("No existen tareas para mostrar");
+        return;
+    }
+    while(archivo != NULL){
+        printf("%s %i %i %i\n", archivo->nombre, archivo->dia, archivo->mes, archivo->anio);
+        archivo = nextTreeMap(data_base);
+    }
+    return;
+}
+
+void Mostrar_no_finalizadas(TreeMap* data_base) //Función que muestra las tareas no finalizadas
+{
+    printf("Tus tareas sin finalizar:\n");
+    Tarea* archivo = firstTreeMap(data_base);
+    int cont = 0;
+
+    if(archivo == NULL){
+        printf("No existen tareas para mostrar");
+        return;
+    }
+    while(archivo != NULL){
+        if(archivo->finalizada == false){
+            printf("%s %i %i %i\n", archivo->nombre, archivo->dia, archivo->mes, archivo->anio);
+            cont = 1;
+        }
+        archivo = nextTreeMap(data_base);
+    }
+    if(cont == 0){
+        printf("No existen tareas no finalizadas");
+    }
+    return;
+}
+
+void Mostrar_finalizadas(TreeMap* data_base) //Función que muestra las tareas marcadas como finalizadas
+{
+    printf("Tus tareas finalizadas:\n");
+    int cont = 0;
+    Tarea* archivo = firstTreeMap(data_base);
+    if(archivo == NULL){
+        printf("No existen tareas para mostrar");
+        return;
+    }
+    while(archivo != NULL){
+        if(archivo->finalizada == true){
+            printf("%s %i %i %i\n", archivo->nombre, archivo->dia, archivo->mes, archivo->anio);
+            cont = 1;
+        }
+        archivo = nextTreeMap(data_base);
+    }
+    if(cont == 0){
+        printf("No existen tareas finalizadas");
+    }
+    return;
+}
+
+void Eliminar (TreeMap* data_base){
+    char nombre;
+    int dia, mes, year;
+    Tarea* archivo = firstTreeMap(data_base);
+
+    Mostrar_no_finalizadas(data_base);
+    printf("Ingrese nombre y fecha de finalización de la tarea a eliminar(en formato de DD MM AA)\n");
+    scanf("%s %d %d %d",&nombre,&dia,&mes,&year);
+    while(archivo != NULL){
+        if(strcmp(archivo->nombre,nombre) == 0 && (archivo->dia == dia) && (archivo->mes == mes) && (archivo->anio == year)){
+            eraseTreeMap(data_base,archivo->fecha_finalizacion);
+            printf("La tarea se ha eliminado con exito\n");
+            return;
+        }
+        else{
+            archivo = nextTreeMap(data_base);
+        }
+    }    
+    printf("No se ha encontrado la tarea a eliminar\n");
+    return;
 }
