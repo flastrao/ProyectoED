@@ -121,25 +121,14 @@ void Mostrar_proximas(TreeMap* data_base) //Funcion que muestra al usuario las p
 {
     printf("ATENTO!\n Tus proximas tareas son:\n Nombre \t\t\t Progreso \t Fecha Finalizacion\n");
     Tarea* aux = firstTreeMap(data_base);
-    while(aux != NULL)
+    int cont = 0;
+    while(aux != NULL && cont < 5)
     {
-        if(aux->flag == true)  printf("%s \t Sin Progreso \t\t %i %i %i\n", aux->nombre, aux->dia, aux->mes, aux->anio);
-        else printf("%s \t %i \t\t %i %i %i\n", aux->nombre, aux->progreso, aux->dia, aux->mes, aux->anio);
+        if(aux->flag == true)  printf("%s \t\t\t Sin Progreso \t %i %i %i\n", aux->nombre, aux->dia, aux->mes, aux->anio);
+        else printf("%s \t\t\t %i \t %i %i %i\n", aux->nombre, aux->progreso, aux->dia, aux->mes, aux->anio);
         aux = nextTreeMap(data_base);
+        cont++;
     }
-}
-
-void actualizar(TreeMap* data_base, HashMap* finalizadas, int fecha) //Funcion que actualiza los datos almacenados en base a la fecha ingresada (Elimina las tareas expirasdas)
-{
-    Tarea* archivo = firstTreeMap(data_base);
-    while(archivo != NULL){
-        if(archivo->fecha_finalizacion){
-            Eliminar(archivo);
-            archivo = nextTreeMap(data_base);
-        }
-        archivo = nextTreeMap(data_base);
-    }
-    return;
 }
 
 void Mostrar_todo(TreeMap* data_base, HashMap* fecha) //Funcion que muestra al usuario las tareas que tiene
@@ -223,3 +212,4 @@ void Eliminar (TreeMap* data_base){
     printf("No se ha encontrado la tarea a eliminar\n");
     return;
 }
+
