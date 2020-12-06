@@ -244,25 +244,55 @@ void Exportar_finalizadas(HashMap* finalizadas, char* nombre)
             char sprogreso[] = "SinProgreso";
             snprintf(line, sizeof(line), "%c, %s, %d, %d ,%d\n", p->nombre, sprogreso, p->dia, p->mes, p->anio);
         }
+        fputs(line, output);
+        p = nextMap(finalizadas);
+    }
+
     fclose(output);
     free(output);
     free(p);
-    }
 }
 
-/*
-void Exportar_no_finalizadas(finalizadas, nombre){
-    return 0;
-}
-void Exportar_todas(HashMap* finalizadas, TreeMap* data_base){
+
+void Exportar_no_finalizadas(TreeMap* data_base, char* nombre){
     FILE* output;
-    char* nombreArchivo[20];
+    char nombreArchivo[20];
     snprintf(nombreArchivo ,sizeof(nombreArchivo),"%s%s", nombre,".csv");
-    output = fopen(nombreArchivo, "w");
-    TreeMap* data_base
-    return 0;
+    output = fopen(nombreArchivo, "TareasNoFinalizadas");
+
+    Tarea* p = (Tarea *) calloc (1,sizeof(Tarea));
+    p = firstTreeMap(data_base);
+    char line[100];
+
+    while (p != NULL)
+    {
+        if(p->flag == 1){
+            char cprogreso[] = "ConProgreso";
+            snprintf(line, sizeof(line), "%c, %s, %d, %d ,%d\n", p->nombre, cprogreso, p->dia, p->mes, p->anio);
+        }
+        if(p->flag == 0){
+            char sprogreso[] = "SinProgreso";
+            snprintf(line, sizeof(line), "%c, %s, %d, %d ,%d\n", p->nombre, sprogreso, p->dia, p->mes, p->anio);
+        }
+        fputs(line, output);
+        p = nextTreeMap(data_base);
+    }
+
+    fclose(output);
+    free(output);
+    free(p);
+}
+
+
+
+/*void Exportar_todas(HashMap* finalizadas, TreeMap* data_base, char* nombre){
+    FILE* output;
+    char nombreArchivo[20];
+    snprintf(nombreArchivo ,sizeof(nombreArchivo),"%s%s", nombre,".csv");
+    output = fopen(nombreArchivo, "TareasFinalizadas");
 }
 */
+
 
 
 /*  char* nombre;
