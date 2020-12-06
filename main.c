@@ -236,11 +236,11 @@ void Exportar_finalizadas(HashMap* finalizadas, char* nombre)
 
     while (p != NULL)
     {
-        if(p->flag == 1){
+        if(p->flag == true){
             char cprogreso[] = "ConProgreso";
             snprintf(line, sizeof(line), "%c, %s, %d, %d ,%d\n", p->nombre, cprogreso, p->dia, p->mes, p->anio);
         }
-        if(p->flag == 0){
+        if(p->flag == false){
             char sprogreso[] = "SinProgreso";
             snprintf(line, sizeof(line), "%c, %s, %d, %d ,%d\n", p->nombre, sprogreso, p->dia, p->mes, p->anio);
         }
@@ -266,11 +266,11 @@ void Exportar_no_finalizadas(TreeMap* data_base, char* nombre){
 
     while (p != NULL)
     {
-        if(p->flag == 1){
+        if(p->flag == true){
             char cprogreso[] = "ConProgreso";
             snprintf(line, sizeof(line), "%c, %s, %d, %d ,%d\n", p->nombre, cprogreso, p->dia, p->mes, p->anio);
         }
-        if(p->flag == 0){
+        if(p->flag == false){
             char sprogreso[] = "SinProgreso";
             snprintf(line, sizeof(line), "%c, %s, %d, %d ,%d\n", p->nombre, sprogreso, p->dia, p->mes, p->anio);
         }
@@ -285,13 +285,52 @@ void Exportar_no_finalizadas(TreeMap* data_base, char* nombre){
 
 
 
-/*void Exportar_todas(HashMap* finalizadas, TreeMap* data_base, char* nombre){
+void Exportar_todas(HashMap* finalizadas, TreeMap* data_base, char* nombre){
     FILE* output;
     char nombreArchivo[20];
     snprintf(nombreArchivo ,sizeof(nombreArchivo),"%s%s", nombre,".csv");
     output = fopen(nombreArchivo, "TareasFinalizadas");
+
+    Tarea* p = (Tarea *) calloc (1,sizeof(Tarea));
+    p = firstMap(finalizadas);
+    char line[100];
+
+    while (p != NULL)
+    {
+        if(p->flag == true){
+            char cprogreso[] = "ConProgreso";
+            snprintf(line, sizeof(line), "%c, %s, %d, %d ,%d\n", p->nombre, cprogreso, p->dia, p->mes, p->anio);
+        }
+        if(p->flag == false){
+            char sprogreso[] = "SinProgreso";
+            snprintf(line, sizeof(line), "%c, %s, %d, %d ,%d\n", p->nombre, sprogreso, p->dia, p->mes, p->anio);
+        }
+        fputs(line, output);
+        p = nextMap(finalizadas);
+    }
+
+    Tarea* s = (Tarea *) calloc (1,sizeof(Tarea));
+    s = firstTreeMap(data_base);
+
+    while (s != NULL)
+    {
+        if(s->flag == true){
+            char cprogreso[] = "ConProgreso";
+            snprintf(line, sizeof(line), "%c, %s, %d, %d ,%d\n", s->nombre, cprogreso, s->dia, s->mes, s->anio);
+        }
+        if(s->flag == false){
+            char sprogreso[] = "SinProgreso";
+            snprintf(line, sizeof(line), "%c, %s, %d, %d ,%d\n", s->nombre, sprogreso, s->dia, s->mes, s->anio);
+        }
+        fputs(line, output);
+        s = nextTreeMap(data_base);
+    }
+    fclose(output);
+    free(output);
+    free(p);
+    free(s);
 }
-*/
+
 
 
 
