@@ -12,6 +12,7 @@ void Mostrar_finalizadas(TreeMap* data_base);
 void Exportar_finalizadas(HashMap* finalizadas, char* nombre);
 void Exportar_no_finalizadas(TreeMap* data_base, char* nombre);
 void Exportar_todas(HashMap* finalizadas,TreeMap* data_base, char* nombre);
+void Agregar_tarea(TreeMap* base_datos, char* nombre, int dia, int mes, int anio, int indicadorProgreso);
 
 int menu(TreeMap* data_base, HashMap* finalizadas)
 {
@@ -23,7 +24,7 @@ int menu(TreeMap* data_base, HashMap* finalizadas)
 
     while(flag != 0)
     {
-        printf("\n ¿Que deseas hacer?\n a) Importar un archivo con tus tareas\n b) Exportar un archivo con tus tareas\n c) Eliminar una tarea o evaluacion\n d) Ver tus tareas\n e) Seleccionar una tarea\n Si no quieres hacer nada presiona ENTER\n");
+        printf("\n ¿Que deseas hacer?\n a) Importar un archivo con tus tareas\n b) Exportar un archivo con tus tareas\n c) Eliminar una tarea o evaluacion\n d) Ver tus tareas\n e) Seleccionar una tarea\n f)Agregar una tarea\n Si no quieres hacer nada presiona ENTER\n");
         fflush(stdin);
         scanf("%c", &opcion);
         switch (opcion)
@@ -75,6 +76,31 @@ int menu(TreeMap* data_base, HashMap* finalizadas)
             case 'e':
             {
                 //Seleccionar(data_base);
+                break;
+            }
+            case 'f':
+            {
+                char* nombre = (char *) calloc (40, sizeof(char));
+                int dia;
+                int mes;
+                int anio;
+                int indicadorProgreso;
+
+                printf("Ingrese el nombre de la tarea que desea agregar:\n");
+                scanf("%s", nombre);
+                fflush(stdin);
+                printf("Indique si la tarea posee progreso o no (1 si tiene progreso, 0 si no tiene progreso):\n");
+                scanf("%d", &indicadorProgreso);
+                fflush(stdin);
+                printf("Ingrese el dia de finalizacion de dicha tarea:\n");
+                scanf("%d", &dia);
+                fflush(stdin);
+                printf("Ingrese el mes de finalizacion de dicha tarea:\n");
+                scanf("%d", &mes);
+                fflush(stdin);
+                printf("Ingrese el anio de finalizacion de dicha tarea:\n");
+                scanf("%d", &anio);
+                Agregar_tarea(data_base, nombre, dia, mes, anio, indicadorProgreso);
                 break;
             }
             case '\n':

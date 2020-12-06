@@ -297,8 +297,6 @@ void Exportar_no_finalizadas(TreeMap* data_base, char* nombre){
     free(p);
 }
 
-
-
 void Exportar_todas(HashMap* finalizadas, TreeMap* data_base, char* nombre){
     FILE* output;
     char nombreArchivo[20];
@@ -341,4 +339,27 @@ void Exportar_todas(HashMap* finalizadas, TreeMap* data_base, char* nombre){
     fclose(output);
     free(output);
     free(p);
+}
+
+void Agregar_tarea(TreeMap* data_base, char* nombre, int dia, int mes, int anio, int indicadorProgreso)
+{
+    Tarea* nuevo = (Tarea *) calloc (1, sizeof(Tarea));
+    nuevo = create_tarea(nombre);
+    nuevo->progreso = 0;
+    if(indicadorProgreso == 1){
+        nuevo->flag = true;
+    }
+    if(indicadorProgreso == 0){
+        nuevo->flag = false;
+    }
+    nuevo->dia = dia;
+    nuevo->mes = mes;
+    nuevo->anio = anio;
+    nuevo->finalizada = false;
+    long* fecha_finalizacion;
+    fecha_finalizacion = (long *) malloc (sizeof(long));
+    *fecha_finalizacion = transformar_fecha(nuevo->dia, nuevo->mes, nuevo->anio);
+    nuevo->fecha_finalizacion = fecha_finalizacion;
+    insertTreeMap(data_base, nuevo->fecha_finalizacion, nuevo);
+    printf("Tarea agregada exitosamente!");
 }
