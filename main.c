@@ -306,6 +306,7 @@ void Seleccionar (TreeMap* data_base, HashMap* finalizadas)
                         if(archivo->progreso < 100) printf("Progreso modificado exitosamente\n");
                         else
                         {
+                            archivo->progreso = 100;
                             insertMap(finalizadas, archivo->fecha_finalizacion, archivo);
                             eraseTreeMap(data_base, archivo->fecha_finalizacion);
                             printf("Su tarea ha sido finalizada\n");
@@ -463,4 +464,29 @@ void Agregar_tarea(TreeMap* data_base, char* nombre, int dia, int mes, int anio,
         return;
     }   
     printf("La tarea ingresada ya se encuentra almacenada\n");
+}
+
+void finalizar_tarea(TreeMap* data_base, HashMap* finalizadas)
+{
+    Mostrar_no_finalizadas(data_base);
+    char nombre[50];
+    int dia, mes, year;
+    printf("¿Que tarea desea finalizar?\n Ingrese nombre de la tarea a finalizar\n");
+    fflush(stdin);
+    scanf("%[^\n]s",nombre);
+    printf("Ingrese fecha de finalizacion de la tarea a modificar(en formato de DD MM AA)\n");
+    fflush(stdin);
+    scanf("%d %d %d",&dia,&mes,&year);
+
+    Tarea* aux = firstTreeMap(data_base);
+    while(aux != NULL)
+    {
+        if((strcmp(aux->nombre,nombre) == 0) && (aux->dia == dia) && (aux->mes == mes) && (aux->anio == year)) break;
+        else    aux = nextTreeMap(data_base);
+    }
+
+    if(aux->flag == true) aux->progreso = 100;
+    insertMap(finalizadas, aux->fecha_finalizacion, aux);
+    eraseTreeMap(data_base, aux->fecha_finalizacion);
+    printf("Su tarea ha sido finalizada con exito\n");
 }

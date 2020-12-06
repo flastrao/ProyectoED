@@ -13,6 +13,7 @@ void Exportar_finalizadas(HashMap* finalizadas, char* nombre);
 void Exportar_no_finalizadas(TreeMap* data_base, char* nombre);
 void Exportar_todas(HashMap* finalizadas,TreeMap* data_base, char* nombre);
 void Agregar_tarea(TreeMap* base_datos, char* nombre, int dia, int mes, int anio, int indicadorProgreso);
+void finalizar_tarea(TreeMap* data_base, HashMap* finalizadas);
 
 int menu(TreeMap* data_base, HashMap* finalizadas)
 {
@@ -24,7 +25,7 @@ int menu(TreeMap* data_base, HashMap* finalizadas)
 
     while(flag != 0)
     {
-        printf("\n ¿Que deseas hacer?\n a) Importar un archivo con tus tareas\n b) Exportar un archivo con tus tareas\n c) Eliminar una tarea o evaluacion\n d) Ver tus tareas\n e) Seleccionar una tarea\n f) Agregar una tarea\n Si no quieres hacer nada presiona ENTER\n");
+        printf("\n ¿Que deseas hacer?\n a) Importar un archivo con tus tareas\n b) Exportar un archivo con tus tareas\n c) Eliminar una tarea o evaluacion\n d) Ver tus tareas\n e) Seleccionar una tarea\n f) Agregar una tarea\n g) Finalizar una tarea\n Si no quieres hacer nada presiona ENTER\n");
         fflush(stdin);
         scanf("%c", &opcion);
         switch (opcion)
@@ -102,6 +103,11 @@ int menu(TreeMap* data_base, HashMap* finalizadas)
                 fflush(stdin);
                 scanf("%d", &anio);
                 Agregar_tarea(data_base, nombre, dia, mes, anio, indicadorProgreso);
+                break;
+            }
+            case 'g':
+            {
+                finalizar_tarea(data_base, finalizadas);
                 break;
             }
             case '\n':
