@@ -9,6 +9,9 @@ void Mostrar_todo (TreeMap* data_base, HashMap* finalizadas);
 void Mostrar_no_finalizadas(TreeMap* data_base);
 void Mostrar_finalizadas(TreeMap* data_base);
 void Seleccionar (TreeMap* data_base);
+void Exportar_finalizadas(HashMap* finalizadas, char* nombre);
+void Exportar_no_finalizadas(TreeMap* data_base, char* nombre);
+void Exportar_todas(HashMap* finalizadas,TreeMap* data_base, char* nombre);
 
 int menu(TreeMap* data_base, HashMap* finalizadas)
 {
@@ -44,9 +47,9 @@ int menu(TreeMap* data_base, HashMap* finalizadas)
                 printf("¿Que desea exportar?\n a) Solo sus tareas finalizadas\n b) Solo sus tareas que aun no han sido finalizadas\n c) Todas tus tarea\n");
                 scanf("%c", &opc);
 
-                if(opc == 'a') Exportar(finalizadas, nombre);
-                else if(opc == 'b') Exportar(data_base, nombre);
-                else if(opc == 'c') Exportar(data_base, finalizadas, nombre);
+                if(opc == 'a') Exportar_finalizadas(finalizadas, nombre);
+                else if(opc == 'b') Exportar_no_finalizadas(data_base, nombre);
+                else if(opc == 'c') Exportar_todas(finalizadas, data_base, nombre);
                 else printf("Opcion no valida, intentelo denuevo\n");
                 break;    
             }
