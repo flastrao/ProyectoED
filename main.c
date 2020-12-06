@@ -82,11 +82,20 @@ int main()
 
 
 /********  FUNCIONES ********/
-
-bool filtro(Tarea* datos) //Funcion que se encarga de que no se ingresen tareas repetidas.
+bool filtro(TreeMap* data_base, Tarea* datos) //Funcion que se encarga de que no se ingresen tareas repetidas
 {
     bool flag = false;
-    Tarea* aux;
+    Tarea* aux = firstTreeMap(data_base);
+
+    while(aux != NULL)
+    {
+        if((strcmp(aux->nombre, datos->nombre) == 0) && (aux->dia == datos->dia) && (aux->mes == datos->mes) && (aux->anio == datos->anio))
+        {
+            flag = true;
+            return flag;
+        }
+        aux = nextTreeMap(data_base);
+    }
     return flag;
 }
 
@@ -245,15 +254,12 @@ void Exportar_finalizadas(HashMap* finalizadas, char* nombre)
 void Exportar_no_finalizadas(finalizadas, nombre){
     return 0;
 }
-
 void Exportar_todas(HashMap* finalizadas, TreeMap* data_base){
     FILE* output;
     char* nombreArchivo[20];
     snprintf(nombreArchivo ,sizeof(nombreArchivo),"%s%s", nombre,".csv");
     output = fopen(nombreArchivo, "w");
-
     TreeMap* data_base
-
     return 0;
 }
 */
