@@ -8,7 +8,7 @@ void Eliminar (TreeMap* data_base);
 void Mostrar_todo (TreeMap* data_base, HashMap* finalizadas);
 void Mostrar_no_finalizadas(TreeMap* data_base);
 void Mostrar_finalizadas(TreeMap* data_base);
-void Seleccionar (TreeMap* data_base);
+//void Seleccionar (TreeMap* data_base);
 void Exportar_finalizadas(HashMap* finalizadas, char* nombre);
 void Exportar_no_finalizadas(TreeMap* data_base, char* nombre);
 void Exportar_todas(HashMap* finalizadas,TreeMap* data_base, char* nombre);
@@ -45,6 +45,7 @@ int menu(TreeMap* data_base, HashMap* finalizadas)
                 scanf("%s", nombre);
                 char opc;
                 printf("¿Que desea exportar?\n a) Solo sus tareas finalizadas\n b) Solo sus tareas que aun no han sido finalizadas\n c) Todas tus tarea\n");
+                fflush(stdin);
                 scanf("%c", &opc);
 
                 if(opc == 'a') Exportar_finalizadas(finalizadas, nombre);
@@ -61,7 +62,7 @@ int menu(TreeMap* data_base, HashMap* finalizadas)
             case 'd':
             {
                 char opc;
-                printf("¿Que tareas desea ver?\n a) Solo tareas finalizadas\n b) Solo tareas que aun no han sido finalizadas\n c) Todas tus tareas");
+                printf("¿Que tareas desea ver?\n a) Solo tareas finalizadas\n b) Solo tareas que aun no han sido finalizadas\n c) Todas tus tareas\n");
                 fflush(stdin);
                 scanf("%c", &opc);
                 
@@ -73,7 +74,7 @@ int menu(TreeMap* data_base, HashMap* finalizadas)
             }
             case 'e':
             {
-                Seleccionar(data_base);
+                //Seleccionar(data_base);
                 break;
             }
             case '\n':

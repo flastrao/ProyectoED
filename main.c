@@ -71,7 +71,7 @@ int main()
         *fecha_finalizacion = transformar_fecha(datos->dia, datos->mes, datos->anio);
         datos->fecha_finalizacion = fecha_finalizacion;
         progre = (char *) get_csv_field(line,1);
-        if(strcmp(progre, "ConProgreso")) datos->flag = true;
+        if(strcmp(progre, " ConProgreso") == 0) datos->flag = true;
         insertTreeMap(data_base, fecha_finalizacion, datos);
     }
     fclose(tareas);
@@ -105,25 +105,39 @@ void Importar(TreeMap* data_base, char* nombre) //Funcion que importa un archivo
     char nombre_archivo[20];
     snprintf(nombre_archivo, sizeof(nombre_archivo), "%s%s", nombre, ".csv");
     input = fopen(nombre_archivo, "r");
-    if(input == NULL)   printf("No existe el archivo\n"); return;
+    if(input == NULL)
+    {
+        printf("No existe el archivo\n"); 
+        return;
+    }   
 
     char line[100];
     char* name;
     char* progre;
     long* fecha_finalizacion;
+    int cont = 0;
     while(fgets(line, 99, input) != NULL)
     {
         name = (char *) get_csv_field(line, 0);
-        Tarea* datos = create_tarea(nombre);
+        Tarea* datos = create_tarea(name);
+        fecha_finalizacion = (long *) malloc (sizeof(long));
         datos->dia = atoi(get_csv_field(line, 2));
         datos->mes = atoi(get_csv_field(line, 3));
         datos->anio = atoi(get_csv_field(line, 4));
         *fecha_finalizacion = transformar_fecha(datos->dia, datos->mes, datos->anio);
         datos->fecha_finalizacion = fecha_finalizacion;
         progre = (char *) get_csv_field(line,1);
-        if(strcmp(progre, "ConProgreso")) datos->flag = true;
-        insertTreeMap(data_base, fecha_finalizacion, datos);
+        if(strcmp(progre, " ConProgreso") == 0) datos->flag = true;
+        if(filtro(data_base, datos) == false)
+        {
+            insertTreeMap(data_base, fecha_finalizacion, datos);
+            cont++;
+        }
     }
+
+    fclose(input);
+    free(input);
+    printf("Se importaron exitosamente %i tareas\n", cont);
 }
 
 void Mostrar_proximas(TreeMap* data_base) //Funcion que muestra al usuario las proximas 10 tareas
@@ -228,7 +242,7 @@ void Exportar_finalizadas(HashMap* finalizadas, char* nombre)
     FILE* output;
     char nombreArchivo[20];
     snprintf(nombreArchivo ,sizeof(nombreArchivo),"%s%s", nombre,".csv");
-    output = fopen(nombreArchivo, "TareasFinalizadas");
+    output = fopen(nombreArchivo, "w");
 
     Tarea* p = (Tarea *) calloc (1,sizeof(Tarea));
     p = firstMap(finalizadas);
@@ -258,7 +272,7 @@ void Exportar_no_finalizadas(TreeMap* data_base, char* nombre){
     FILE* output;
     char nombreArchivo[20];
     snprintf(nombreArchivo ,sizeof(nombreArchivo),"%s%s", nombre,".csv");
-    output = fopen(nombreArchivo, "TareasNoFinalizadas");
+    output = fopen(nombreArchivo, "w");
 
     Tarea* p = (Tarea *) calloc (1,sizeof(Tarea));
     p = firstTreeMap(data_base);
@@ -268,11 +282,11 @@ void Exportar_no_finalizadas(TreeMap* data_base, char* nombre){
     {
         if(p->flag == true){
             char cprogreso[] = "ConProgreso";
-            snprintf(line, sizeof(line), "%c, %s, %d, %d ,%d\n", p->nombre, cprogreso, p->dia, p->mes, p->anio);
+            snprintf(line, sizeof(line), "%s, %s, %d, %d ,%d\n", p->nombre, cprogreso, p->dia, p->mes, p->anio);
         }
         if(p->flag == false){
             char sprogreso[] = "SinProgreso";
-            snprintf(line, sizeof(line), "%c, %s, %d, %d ,%d\n", p->nombre, sprogreso, p->dia, p->mes, p->anio);
+            snprintf(line, sizeof(line), "%s, %s, %d, %d ,%d\n", p->nombre, sprogreso, p->dia, p->mes, p->anio);
         }
         fputs(line, output);
         p = nextTreeMap(data_base);
@@ -289,57 +303,42 @@ void Exportar_todas(HashMap* finalizadas, TreeMap* data_base, char* nombre){
     FILE* output;
     char nombreArchivo[20];
     snprintf(nombreArchivo ,sizeof(nombreArchivo),"%s%s", nombre,".csv");
-    output = fopen(nombreArchivo, "TareasFinalizadas");
+    output = fopen(nombreArchivo, "w");
 
+    char cprogreso[40] = "ConProgreso";
+    char sprogreso[40] = "SinProgreso";
     Tarea* p = (Tarea *) calloc (1,sizeof(Tarea));
     p = firstMap(finalizadas);
     char line[100];
-
     while (p != NULL)
     {
         if(p->flag == true){
-            char cprogreso[] = "ConProgreso";
-            snprintf(line, sizeof(line), "%c, %s, %d, %d ,%d\n", p->nombre, cprogreso, p->dia, p->mes, p->anio);
+            snprintf(line, sizeof(line), "%s, %s, %d, %d ,%d\n", p->nombre, cprogreso, p->dia, p->mes, p->anio);
         }
         if(p->flag == false){
-            char sprogreso[] = "SinProgreso";
-            snprintf(line, sizeof(line), "%c, %s, %d, %d ,%d\n", p->nombre, sprogreso, p->dia, p->mes, p->anio);
+            snprintf(line, sizeof(line), "%s, %s, %d, %d ,%d\n", p->nombre, sprogreso, p->dia, p->mes, p->anio);
         }
         fputs(line, output);
         p = nextMap(finalizadas);
     }
 
-    Tarea* s = (Tarea *) calloc (1,sizeof(Tarea));
-    s = firstTreeMap(data_base);
+    p = firstTreeMap(data_base);
 
-    while (s != NULL)
+    while (p != NULL)
     {
-        if(s->flag == true){
+        if(p->flag == true){
             char cprogreso[] = "ConProgreso";
-            snprintf(line, sizeof(line), "%c, %s, %d, %d ,%d\n", s->nombre, cprogreso, s->dia, s->mes, s->anio);
+            snprintf(line, sizeof(line), "%s, %s, %d, %d ,%d\n", p->nombre, cprogreso, p->dia, p->mes, p->anio);
         }
-        if(s->flag == false){
+        if(p->flag == false){
             char sprogreso[] = "SinProgreso";
-            snprintf(line, sizeof(line), "%c, %s, %d, %d ,%d\n", s->nombre, sprogreso, s->dia, s->mes, s->anio);
+            snprintf(line, sizeof(line), "%s, %s, %d, %d ,%d\n", p->nombre, sprogreso, p->dia, p->mes, p->anio);
         }
         fputs(line, output);
-        s = nextTreeMap(data_base);
+        p = nextTreeMap(data_base);
     }
+
     fclose(output);
     free(output);
     free(p);
-    free(s);
 }
-
-
-
-
-/*  char* nombre;
-    int progreso;
-    bool flag; //Indica si la tarea posee progreso o no.
-    int dia;
-    int mes;
-    int anio;
-    bool finalizada; //Indica si la tarea ya fue finalizada.
-    long* fecha_finalizacion;
-*/
