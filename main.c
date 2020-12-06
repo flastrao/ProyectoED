@@ -214,17 +214,20 @@ void Mostrar_finalizadas(TreeMap* data_base) //Función que muestra las tareas m
     return;
 }
 
-void Eliminar (TreeMap* data_base)
-{
-    char* nombre;
+void Eliminar (TreeMap* data_base){
+    char nombre[20];
     int dia, mes, year;
     Tarea* archivo = firstTreeMap(data_base);
 
     Mostrar_no_finalizadas(data_base);
-    printf("Ingrese nombre y fecha de finalización de la tarea a eliminar(en formato de DD MM AA)\n");
-    scanf("%s %d %d %d",&nombre,&dia,&mes,&year);
+    printf("Ingrese nombre de la tarea a eliminar\n");
+    fflush(stdin);
+    scanf("%[^\n]s",nombre);
+    printf("Ingrese fecha de finalizacion de la tarea a eliminar(en formato de DD MM AA)\n");
+    fflush(stdin);
+    scanf("%d %d %d",&dia,&mes,&year);
     while(archivo != NULL){
-        if(strcmp(archivo->nombre,nombre) == 0 && (archivo->dia == dia) && (archivo->mes == mes) && (archivo->anio == year)){
+        if((strcmp(archivo->nombre,nombre) == 0) && (archivo->dia == dia) && (archivo->mes == mes) && (archivo->anio == year)){
             eraseTreeMap(data_base,archivo->fecha_finalizacion);
             printf("La tarea se ha eliminado con exito\n");
             return;
@@ -235,6 +238,89 @@ void Eliminar (TreeMap* data_base)
     }    
     printf("No se ha encontrado la tarea a eliminar\n");
     return;
+}
+
+void Seleccionar (TreeMap* data_base)
+{
+    char desicion;
+    char nombre[20];
+    int dia, mes, year;
+
+    char nuevo_Nombre[20];
+    int dia2, mes2, year2;
+    int progreso2 = 0;
+
+    int flag = 1;
+    char fin[2];
+    Tarea* archivo = firstTreeMap(data_base);
+    Tarea* aux = archivo;
+
+    printf("Para terminar la función ingrese una opción distinta de a, b o c\n");
+    while(flag != 0){
+        Mostrar_no_finalizadas(data_base);
+        printf("Ingrese nombre de la tarea a seleccionar\n");
+        fflush(stdin);
+        scanf("%[^\n]s",nombre);
+        printf("Ingrese fecha de finalizacion de la tarea a modificar(en formato de DD MM AA)\n");
+        fflush(stdin);
+        scanf("%d %d %d",&dia,&mes,&year);
+
+        while(archivo != NULL){
+            if((strcmp(archivo->nombre,nombre) == 0) && (archivo->dia == dia) && (archivo->mes == mes) && (archivo->anio == year)){
+                printf("¿Que desea modificar?\n a) Nombre de la tarea\n b) Fecha de la tarea\n c) Progreso de la tarea\n");
+                fflush(stdin);
+                scanf("%c", &desicion);
+                switch (desicion)
+                {
+                    case 'a':
+                    {
+                        printf("Ingrese nuevo nombre\n");
+                        fflush(stdin);
+                        scanf("%[^\n]s",nuevo_Nombre);
+                        strcpy(aux->nombre,nuevo_Nombre);
+                        printf("Nombre modificado exitosamente\n");
+                        break;
+                    }
+                    case 'b':
+                    {
+                        printf("Ingrese nueva fecha(en formato de DD MM AA)\n");
+                        fflush(stdin);
+                        scanf("%d %d %d",&dia2, &mes2, &year2);
+                        aux->dia = dia2;
+                        aux->mes = mes2;
+                        aux->anio = year2;
+                        printf("Fecha modificada exitosamente\n");
+                        break;
+                    }
+                    case 'c':
+                    {
+                        printf("Ingrese porcentaje progreso (solo numero)\n");
+                        fflush(stdin);
+                        scanf("%d",&progreso2);
+                        aux->progreso = progreso2;
+                        printf("Progreso modificado exitosamente\n");
+                        break;
+                    }
+                    default:
+                    {
+                        eraseTreeMap(data_base, archivo->fecha_finalizacion);
+                        insertTreeMap(data_base, aux->fecha_finalizacion, aux);
+                        printf("Función terminada\n");
+                        flag = 0;
+                        return;
+                    }
+                }
+            }
+            else{
+                archivo = nextTreeMap(data_base);
+            }
+        }
+        printf("¿Desea finalizar la funcion? (si/no)\n");
+        scanf("%s",fin);
+        if(strcmp(fin,"si") == 0){
+            return;
+        }
+    }
 }
 
 void Exportar_finalizadas(HashMap* finalizadas, char* nombre)

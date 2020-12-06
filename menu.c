@@ -8,7 +8,7 @@ void Eliminar (TreeMap* data_base);
 void Mostrar_todo (TreeMap* data_base, HashMap* finalizadas);
 void Mostrar_no_finalizadas(TreeMap* data_base);
 void Mostrar_finalizadas(TreeMap* data_base);
-//void Seleccionar (TreeMap* data_base);
+void Seleccionar (TreeMap* data_base);
 void Exportar_finalizadas(HashMap* finalizadas, char* nombre);
 void Exportar_no_finalizadas(TreeMap* data_base, char* nombre);
 void Exportar_todas(HashMap* finalizadas,TreeMap* data_base, char* nombre);
@@ -75,7 +75,7 @@ int menu(TreeMap* data_base, HashMap* finalizadas)
             }
             case 'e':
             {
-                //Seleccionar(data_base);
+                Seleccionar(data_base);
                 break;
             }
             case 'f':
