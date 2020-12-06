@@ -7,8 +7,8 @@ void actualizar(TreeMap* data_base, HashMap* finalizadas, int fecha);
 void Eliminar (TreeMap* data_base);
 void Mostrar_todo (TreeMap* data_base, HashMap* finalizadas);
 void Mostrar_no_finalizadas(TreeMap* data_base);
-void Mostrar_finalizadas(TreeMap* data_base);
-void Seleccionar (TreeMap* data_base);
+void Mostrar_finalizadas(HashMap* finalizadas);
+void Seleccionar (TreeMap* data_base, HashMap* finalizadas);
 void Exportar_finalizadas(HashMap* finalizadas, char* nombre);
 void Exportar_no_finalizadas(TreeMap* data_base, char* nombre);
 void Exportar_todas(HashMap* finalizadas,TreeMap* data_base, char* nombre);
@@ -24,7 +24,7 @@ int menu(TreeMap* data_base, HashMap* finalizadas)
 
     while(flag != 0)
     {
-        printf("\n ¿Que deseas hacer?\n a) Importar un archivo con tus tareas\n b) Exportar un archivo con tus tareas\n c) Eliminar una tarea o evaluacion\n d) Ver tus tareas\n e) Seleccionar una tarea\n f)Agregar una tarea\n Si no quieres hacer nada presiona ENTER\n");
+        printf("\n ¿Que deseas hacer?\n a) Importar un archivo con tus tareas\n b) Exportar un archivo con tus tareas\n c) Eliminar una tarea o evaluacion\n d) Ver tus tareas\n e) Seleccionar una tarea\n f) Agregar una tarea\n Si no quieres hacer nada presiona ENTER\n");
         fflush(stdin);
         scanf("%c", &opcion);
         switch (opcion)
@@ -67,7 +67,7 @@ int menu(TreeMap* data_base, HashMap* finalizadas)
                 fflush(stdin);
                 scanf("%c", &opc);
                 
-                if(opc == 'a') Mostrar_finalizadas(data_base);
+                if(opc == 'a') Mostrar_finalizadas(finalizadas);
                 else if(opc == 'b') Mostrar_no_finalizadas(data_base);
                 else if(opc == 'c') Mostrar_todo(data_base, finalizadas);
                 else printf("Opcion no valida, intentelo denuevo\n");
@@ -75,7 +75,7 @@ int menu(TreeMap* data_base, HashMap* finalizadas)
             }
             case 'e':
             {
-                Seleccionar(data_base);
+                Seleccionar(data_base, finalizadas);
                 break;
             }
             case 'f':
@@ -87,18 +87,19 @@ int menu(TreeMap* data_base, HashMap* finalizadas)
                 int indicadorProgreso;
 
                 printf("Ingrese el nombre de la tarea que desea agregar:\n");
-                scanf("%s", nombre);
                 fflush(stdin);
+                scanf("%[^\n]s",nombre);
                 printf("Indique si la tarea posee progreso o no (1 si tiene progreso, 0 si no tiene progreso):\n");
+                fflush(stdin);
                 scanf("%d", &indicadorProgreso);
-                fflush(stdin);
                 printf("Ingrese el dia de finalizacion de dicha tarea:\n");
+                fflush(stdin);
                 scanf("%d", &dia);
-                fflush(stdin);
                 printf("Ingrese el mes de finalizacion de dicha tarea:\n");
-                scanf("%d", &mes);
                 fflush(stdin);
+                scanf("%d", &mes);
                 printf("Ingrese el anio de finalizacion de dicha tarea:\n");
+                fflush(stdin);
                 scanf("%d", &anio);
                 Agregar_tarea(data_base, nombre, dia, mes, anio, indicadorProgreso);
                 break;
