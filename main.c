@@ -9,7 +9,7 @@
 #include "lectura_csv.c"
 #include "menu.c"
 
-int ID = 1; //Asignador de IDs
+int ID = 1; //Asignador de IDs.
 
 typedef struct //Estructura de cada tarea.
 {
@@ -76,13 +76,13 @@ int main()
     }
     fclose(tareas);
     free(tareas);
-    menu(data_base, finalizadas);
+    menu(data_base, finalizadas); //Se llama al menu.
     return 0;
 }
 
+/****************************  FUNCIONES ****************************/
 
-/********  FUNCIONES ********/
-bool filtro(TreeMap* data_base, Tarea* datos) //Funcion que se encarga de que no se ingresen tareas repetidas
+bool filtro(TreeMap* data_base, Tarea* datos) //Funcion que se encarga de que no se ingresen tareas repetidas.
 {
     bool flag = false;
     Tarea* aux = firstTreeMap(data_base);
@@ -99,15 +99,16 @@ bool filtro(TreeMap* data_base, Tarea* datos) //Funcion que se encarga de que no
     return flag;
 }
 
-void Importar(TreeMap* data_base, char* nombre) //Funcion que importa un archivo con tareas.
+void Importar(TreeMap* data_base, char* nombre) //Funcion que importa un archivo csv con tareas.
 {
     FILE* input;
     char nombre_archivo[20];
     snprintf(nombre_archivo, sizeof(nombre_archivo), "%s%s", nombre, ".csv");
     input = fopen(nombre_archivo, "r");
+
     if(input == NULL)
     {
-        printf("No existe el archivo\n"); 
+        printf("El archivo ingresado no existe!\n"); //Opcion por si el nombre del archivo ingresado no existe.
         return;
     }   
 
@@ -116,7 +117,7 @@ void Importar(TreeMap* data_base, char* nombre) //Funcion que importa un archivo
     char* progre;
     long* fecha_finalizacion;
     int cont = 0;
-    while(fgets(line, 99, input) != NULL)
+    while(fgets(line, 99, input) != NULL) //Se va leyendo el archivo csv y se va guardando en la base de datos.
     {
         name = (char *) get_csv_field(line, 0);
         Tarea* datos = create_tarea(name);
@@ -127,20 +128,20 @@ void Importar(TreeMap* data_base, char* nombre) //Funcion que importa un archivo
         *fecha_finalizacion = transformar_fecha(datos->dia, datos->mes, datos->anio);
         datos->fecha_finalizacion = fecha_finalizacion;
         progre = (char *) get_csv_field(line,1);
-        if(strcmp(progre, " ConProgreso") == 0) datos->flag = true;
+        if(strcmp(progre, " ConProgreso") == 0) datos->flag = true; //Si la tarea tiene progreso el flag de su estructura cambia a true.
         if(filtro(data_base, datos) == false)
         {
-            insertTreeMap(data_base, fecha_finalizacion, datos);
+            insertTreeMap(data_base, fecha_finalizacion, datos); //Si la tarea no esta repetida ingresa a la base de datos
             cont++;
         }
     }
 
     fclose(input);
     free(input);
-    printf("Se importaron exitosamente %i tareas\n", cont);
+    printf("Se importaron exitosamente %i tareas.\n", cont);
 }
 
-void Mostrar_proximas(TreeMap* data_base) //Funcion que muestra al usuario las proximas 10 tareas
+void Mostrar_proximas(TreeMap* data_base) //Funcion que muestra al usuario las proximas 10 tareas.
 {
     printf("ATENTO!\n Tus proximas tareas son:\n Nombre \t\t\t Progreso \t Fecha Finalizacion\n");
     Tarea* aux = firstTreeMap(data_base);
@@ -154,16 +155,16 @@ void Mostrar_proximas(TreeMap* data_base) //Funcion que muestra al usuario las p
     }
 }
 
-void Mostrar_todo(TreeMap* data_base, HashMap* fecha) //Funcion que muestra al usuario las tareas que tiene
+void Mostrar_todo(TreeMap* data_base, HashMap* fecha) //Funcion que muestra al usuario las tareas que tiene.
 {
-    
     Tarea* archivo = firstTreeMap(data_base);
     if(archivo == NULL){
-        printf("No existen tareas para mostrar");
+        printf("Lo sentimos, no existen tareas para mostrar."); //Si es que no hay tareas en la base de datos.
         return;
     }
+    printf("A continuacion se mostraran todas las tareas de la base de datos:\n");
     printf("\n Nombre \t\t\t Progreso \t Fecha Finalizacion\n");
-    while(archivo != NULL)
+    while(archivo != NULL) //Se muestran todas las tareas.
     {
         if(archivo->flag == true)  printf("%-32s|%10i\t|%i %i %i\n", archivo->nombre, archivo->progreso, archivo->dia, archivo->mes, archivo->anio);
         else printf("%-32s|SinProgreso\t|%i %i %i\n", archivo->nombre, archivo->dia, archivo->mes, archivo->anio);
@@ -172,18 +173,19 @@ void Mostrar_todo(TreeMap* data_base, HashMap* fecha) //Funcion que muestra al u
     return;
 }
 
-void Mostrar_no_finalizadas(TreeMap* data_base) //Función que muestra las tareas no finalizadas
+void Mostrar_no_finalizadas(TreeMap* data_base) //Función que muestra las tareas no finalizadas.
 {
     
     Tarea* archivo = firstTreeMap(data_base);
     int cont = 0;
 
     if(archivo == NULL){
-        printf("No existen tareas para mostrar");
+        printf("Lo sentimos, no existen tareas para mostrar."); //Si es que no existen tareas en la base de datos.
         return;
     }
+    printf("A continuacion se mostraran todas las tareas que no han sido finalizadas:\n");
     printf("\n Nombre \t\t\t Progreso \t Fecha Finalizacion\n");
-    while(archivo != NULL)
+    while(archivo != NULL) //Se muestran las tareas que no han sido finalizadas.
     {
         if(archivo->flag == true)  printf("%-32s|%10i\t|%i %i %i\n", archivo->nombre, archivo->progreso, archivo->dia, archivo->mes, archivo->anio);
         else printf("%-32s|SinProgreso\t|%i %i %i\n", archivo->nombre, archivo->dia, archivo->mes, archivo->anio);
@@ -191,22 +193,22 @@ void Mostrar_no_finalizadas(TreeMap* data_base) //Función que muestra las tarea
         cont = 1;
     }
     if(cont == 0){
-        printf("No existen tareas no finalizadas");
+        printf("No existen tareas no finalizadas"); //Si es que no existen tareas que no hayan sido finalizadas.
     }
     return;
 }
 
-void Mostrar_finalizadas(HashMap* data_base) //Función que muestra las tareas marcadas como finalizadas
+void Mostrar_finalizadas(HashMap* data_base) //Función que muestra las tareas marcadas como finalizadas.
 {
-    
 
     Tarea* archivo = firstMap(data_base);
     if(archivo == NULL){
-        printf("No existen tareas finalizadas\n");
+        printf("No existen tareas finalizadas\n"); //Si es que no existen tareas en la base de datos.
         return;
     }
+    printf("A continuacion se mostraran todas las tareas que han sido finalizadas:\n");
     printf("\n Nombre \t\t\t Progreso \t Fecha Finalizacion\n");
-    while(archivo != NULL)
+    while(archivo != NULL) //Se muestran todas las tareas que han sido finalizadas
     {
         if(archivo->flag == true)  printf("%-32s|%10i\t|%i %i %i\n", archivo->nombre, archivo->progreso, archivo->dia, archivo->mes, archivo->anio);
         else printf("%-32s|SinProgreso\t|%i %i %i\n", archivo->nombre, archivo->dia, archivo->mes, archivo->anio);
@@ -219,8 +221,8 @@ void Eliminar (TreeMap* data_base){
     char nombre[50];
     int dia, mes, year;
     
-    Mostrar_no_finalizadas(data_base);
-    printf("\nIngrese nombre de la tarea a eliminar\n");
+    Mostrar_no_finalizadas(data_base); //Se le muestran las tareas no finalizadas al usuario.
+    printf("\nIngrese nombre de la tarea a eliminar\n"); //El usuario procede a ingresar los datos de la tarea que desea eliminar.
     fflush(stdin);
     scanf("%[^\n]s",nombre);
     printf("Ingrese dia de finalizacion de la tarea\n");
@@ -234,7 +236,7 @@ void Eliminar (TreeMap* data_base){
     scanf("%d",&year);
 
     Tarea* archivo = firstTreeMap(data_base);
-    while(archivo != NULL){
+    while(archivo != NULL){ //Se revisa en la base de datos la tarea, si se encuentra se eliminará.
         if((strcmp(archivo->nombre,nombre) == 0) && (archivo->dia == dia) && (archivo->mes == mes) && (archivo->anio == year)){
             eraseTreeMap(data_base,archivo->fecha_finalizacion);
             printf("La tarea se ha eliminado con exito\n");
@@ -242,7 +244,7 @@ void Eliminar (TreeMap* data_base){
         }
         archivo = nextTreeMap(data_base);
     }    
-    printf("No se ha encontrado la tarea a eliminar\n");
+    printf("Error: No se ha encontrado la tarea a eliminar\n"); //Si no se encuentra la tarea en la base de datos.
     return;
 }
 
@@ -259,7 +261,7 @@ void Seleccionar (TreeMap* data_base, HashMap* finalizadas)
     int flag = 1;
     char fin[2];
     
-    Mostrar_no_finalizadas(data_base);
+    Mostrar_no_finalizadas(data_base); //Se le muestra al usuario la base de datos.
     Tarea* archivo = firstTreeMap(data_base);
     Tarea* aux = archivo;
     while(flag != 0){
@@ -271,7 +273,7 @@ void Seleccionar (TreeMap* data_base, HashMap* finalizadas)
         scanf("%d %d %d",&dia,&mes,&year);
 
         while(archivo != NULL){
-            if((strcmp(archivo->nombre,nombre) == 0) && (archivo->dia == dia) && (archivo->mes == mes) && (archivo->anio == year)){
+            if((strcmp(archivo->nombre,nombre) == 0) && (archivo->dia == dia) && (archivo->mes == mes) && (archivo->anio == year)){ //Si la tarea existe entonces se accede al submenu.
                 printf("¿Que desea modificar?\n a) Nombre de la tarea\n b) Fecha de la tarea\n c) Progreso de la tarea\n Si no desea continuar presione ENTER\n");
                 fflush(stdin);
                 scanf("%c", &desicion);
@@ -279,34 +281,34 @@ void Seleccionar (TreeMap* data_base, HashMap* finalizadas)
                 {
                     case 'a':
                     {
-                        printf("Ingrese nuevo nombre\n");
+                        printf("Ingrese nuevo nombre\n"); //Modificacion del nombre de la tarea.
                         fflush(stdin);
                         scanf("%[^\n]s",nuevo_Nombre);
                         strcpy(archivo->nombre,nuevo_Nombre);
-                        printf("Nombre modificado exitosamente\n");
+                        printf("Nombre modificado exitosamente!\n");
                         break;
                     }
                     case 'b':
                     {
-                        printf("Ingrese nueva fecha(en formato de DD MM AA)\n");
+                        printf("Ingrese nueva fecha(en formato de DD MM AA)\n"); //Modificacion de la fecha de finalizacion de la tarea.
                         fflush(stdin);
                         scanf("%d %d %d",&dia2, &mes2, &year2);
                         archivo->dia = dia2;
                         archivo->mes = mes2;
                         archivo->anio = year2;
-                        printf("Fecha modificada exitosamente\n");
+                        printf("Fecha modificada exitosamente!\n");
                         break;
                     }
                     case 'c':
                     {
-                        printf("Ingrese porcentaje progreso (solo numero)\n");
+                        printf("Ingrese porcentaje progreso (solo numero)\n"); //Modificacion del progreso en la tarea.
                         fflush(stdin);
                         scanf("%d",&progreso2);
                         archivo->progreso += progreso2;
-                        if(archivo->progreso < 100) printf("Progreso modificado exitosamente\n");
+                        if(archivo->progreso < 100) printf("Progreso modificado exitosamente!\n"); 
                         else
                         {
-                            archivo->progreso = 100;
+                            archivo->progreso = 100; //En caso de que el progreso sea del 100% se tomara en cuenta como finalizada.
                             insertMap(finalizadas, archivo->fecha_finalizacion, archivo);
                             eraseTreeMap(data_base, archivo->fecha_finalizacion);
                             printf("Su tarea ha sido finalizada\n");
@@ -325,7 +327,7 @@ void Seleccionar (TreeMap* data_base, HashMap* finalizadas)
                 archivo = nextTreeMap(data_base);
             }
         }
-        printf("¿Desea finalizar la funcion? (si/no)\n");
+        printf("¿Desea finalizar la funcion? (si/no)\n"); //Caso de que el usuario no desee efectuar mas cambios.
         fflush(stdin);
         scanf("%s",fin);
         if(strcmp(fin,"si") == 0){
@@ -334,7 +336,7 @@ void Seleccionar (TreeMap* data_base, HashMap* finalizadas)
     }
 }
 
-void Exportar_finalizadas(HashMap* finalizadas, char* nombre)
+void Exportar_finalizadas(HashMap* finalizadas, char* nombre) //Funcion que exporta solo las tareas finalizadas.
 {
     FILE* output;
     char nombreArchivo[20];
@@ -347,11 +349,11 @@ void Exportar_finalizadas(HashMap* finalizadas, char* nombre)
 
     while (p != NULL)
     {
-        if(p->flag == true){
+        if(p->flag == true){ //Caso de que la tarea a exportar tenga progreso.
             char cprogreso[] = "ConProgreso";
             snprintf(line, sizeof(line), "%c, %s, %d, %d ,%d\n", p->nombre, cprogreso, p->dia, p->mes, p->anio);
         }
-        if(p->flag == false){
+        if(p->flag == false){ //Caso de que la tarea a exportar no tenga progreso.
             char sprogreso[] = "SinProgreso";
             snprintf(line, sizeof(line), "%c, %s, %d, %d ,%d\n", p->nombre, sprogreso, p->dia, p->mes, p->anio);
         }
@@ -365,7 +367,7 @@ void Exportar_finalizadas(HashMap* finalizadas, char* nombre)
 }
 
 
-void Exportar_no_finalizadas(TreeMap* data_base, char* nombre){
+void Exportar_no_finalizadas(TreeMap* data_base, char* nombre){ //Funcion que exporta solo las funciones no finalizadas.
     FILE* output;
     char nombreArchivo[20];
     snprintf(nombreArchivo ,sizeof(nombreArchivo),"%s%s", nombre,".csv");
@@ -378,11 +380,11 @@ void Exportar_no_finalizadas(TreeMap* data_base, char* nombre){
     while (p != NULL)
     {
         if(p->flag == true){
-            char cprogreso[] = "ConProgreso";
+            char cprogreso[] = "ConProgreso"; //Caso de que la tarea a exportar tenga progreso.
             snprintf(line, sizeof(line), "%s, %s, %d, %d ,%d\n", p->nombre, cprogreso, p->dia, p->mes, p->anio);
         }
         if(p->flag == false){
-            char sprogreso[] = "SinProgreso";
+            char sprogreso[] = "SinProgreso"; //Caso de que la tarea a exportar no tenga progreso.
             snprintf(line, sizeof(line), "%s, %s, %d, %d ,%d\n", p->nombre, sprogreso, p->dia, p->mes, p->anio);
         }
         fputs(line, output);
@@ -394,7 +396,7 @@ void Exportar_no_finalizadas(TreeMap* data_base, char* nombre){
     free(p);
 }
 
-void Exportar_todas(HashMap* finalizadas, TreeMap* data_base, char* nombre){
+void Exportar_todas(HashMap* finalizadas, TreeMap* data_base, char* nombre){ //Caso de que se quiera exportar todas las tareas, tanto no finalizadas como finalizadas.
     FILE* output;
     char nombreArchivo[20];
     snprintf(nombreArchivo ,sizeof(nombreArchivo),"%s%s", nombre,".csv");
@@ -405,12 +407,13 @@ void Exportar_todas(HashMap* finalizadas, TreeMap* data_base, char* nombre){
     Tarea* p = (Tarea *) calloc (1,sizeof(Tarea));
     p = firstMap(finalizadas);
     char line[100];
-    while (p != NULL)
+
+    while (p != NULL) //Primero se exportan las finalizadas.
     {
-        if(p->flag == true){
+        if(p->flag == true){ //Caso de que la tarea a exportar tenga progreso.
             snprintf(line, sizeof(line), "%s, %s, %d, %d ,%d\n", p->nombre, cprogreso, p->dia, p->mes, p->anio);
         }
-        if(p->flag == false){
+        if(p->flag == false){ //Caso de que la tarea a exportar no tenga progreso.
             snprintf(line, sizeof(line), "%s, %s, %d, %d ,%d\n", p->nombre, sprogreso, p->dia, p->mes, p->anio);
         }
         fputs(line, output);
@@ -419,14 +422,14 @@ void Exportar_todas(HashMap* finalizadas, TreeMap* data_base, char* nombre){
 
     p = firstTreeMap(data_base);
 
-    while (p != NULL)
+    while (p != NULL) //Se exportan las no finalizadas
     {
         if(p->flag == true){
-            char cprogreso[] = "ConProgreso";
+            char cprogreso[] = "ConProgreso"; //Caso de que la tarea a exportar tenga progreso.
             snprintf(line, sizeof(line), "%s, %s, %d, %d ,%d\n", p->nombre, cprogreso, p->dia, p->mes, p->anio);
         }
         if(p->flag == false){
-            char sprogreso[] = "SinProgreso";
+            char sprogreso[] = "SinProgreso"; //Caso de que la tarea a exportar no tenga progreso.
             snprintf(line, sizeof(line), "%s, %s, %d, %d ,%d\n", p->nombre, sprogreso, p->dia, p->mes, p->anio);
         }
         fputs(line, output);
@@ -438,11 +441,11 @@ void Exportar_todas(HashMap* finalizadas, TreeMap* data_base, char* nombre){
     free(p);
 }
 
-void Agregar_tarea(TreeMap* data_base, char* nombre, int dia, int mes, int anio, int indicadorProgreso)
+void Agregar_tarea(TreeMap* data_base, char* nombre, int dia, int mes, int anio, int indicadorProgreso) //Funcion que agrega una tarea a la base de datos.
 {
-    Tarea* nuevo = (Tarea *) calloc (1, sizeof(Tarea));
+    Tarea* nuevo = (Tarea *) calloc (1, sizeof(Tarea)); //Se le asigna memoria.
     nuevo = create_tarea(nombre);
-    nuevo->progreso = 0;
+    nuevo->progreso = 0; //Se le asignan los valores a su estrucutra.
     if(indicadorProgreso == 1){
         nuevo->flag = true;
     }
@@ -457,7 +460,7 @@ void Agregar_tarea(TreeMap* data_base, char* nombre, int dia, int mes, int anio,
     fecha_finalizacion = (long *) malloc (sizeof(long));
     *fecha_finalizacion = transformar_fecha(nuevo->dia, nuevo->mes, nuevo->anio);
     nuevo->fecha_finalizacion = fecha_finalizacion;
-    if(filtro(data_base, nuevo) == false)
+    if(filtro(data_base, nuevo) == false) //Filtro si es que la tarea a ingresar ya existe en la base de datos.
     {
         insertTreeMap(data_base, fecha_finalizacion, nuevo);
         printf("Tarea agregada exitosamente!\n");
@@ -466,9 +469,9 @@ void Agregar_tarea(TreeMap* data_base, char* nombre, int dia, int mes, int anio,
     printf("La tarea ingresada ya se encuentra almacenada\n");
 }
 
-void finalizar_tarea(TreeMap* data_base, HashMap* finalizadas)
+void finalizar_tarea(TreeMap* data_base, HashMap* finalizadas) //Funcion que marca una tarea como finalizada.
 {
-    Mostrar_no_finalizadas(data_base);
+    Mostrar_no_finalizadas(data_base); //Se le muestran las tareas NO finalizadas al usuario.
     char nombre[50];
     int dia, mes, year;
     printf("¿Que tarea desea finalizar?\n Ingrese nombre de la tarea a finalizar\n");
@@ -481,12 +484,12 @@ void finalizar_tarea(TreeMap* data_base, HashMap* finalizadas)
     Tarea* aux = firstTreeMap(data_base);
     while(aux != NULL)
     {
-        if((strcmp(aux->nombre,nombre) == 0) && (aux->dia == dia) && (aux->mes == mes) && (aux->anio == year)) break;
+        if((strcmp(aux->nombre,nombre) == 0) && (aux->dia == dia) && (aux->mes == mes) && (aux->anio == year)) break; //Se busca la tarea en la base de datos.
         else    aux = nextTreeMap(data_base);
     }
 
-    if(aux->flag == true) aux->progreso = 100;
-    insertMap(finalizadas, aux->fecha_finalizacion, aux);
-    eraseTreeMap(data_base, aux->fecha_finalizacion);
-    printf("Su tarea ha sido finalizada con exito\n");
+    if(aux->flag == true) aux->progreso = 100; //Se le marca como finalizada a la tarea.
+    insertMap(finalizadas, aux->fecha_finalizacion, aux); //Se ingresa a la base de datos de las tareas finalizadas.
+    eraseTreeMap(data_base, aux->fecha_finalizacion); //Se elimina de la base de datos que contiene a las tareas que no han sido finalizadas.
+    printf("Su tarea ha sido finalizada con exito!\n");
 }
